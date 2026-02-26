@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 知识图谱</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500&family=Space+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --paper: #f5f0e8;
+    --paper-dark: #ede7d9;
+    --accent: #c0392b;
+    --accent2: #2c5f8a;
+    --accent3: #276749;
+    --muted: #7a6f62;
+    --line: rgba(26,26,26,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 80px 60px 60px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: 'AI';
+    position: absolute;
+    right: -20px;
+    top: -40px;
+    font-family: 'Noto Serif SC', serif;
+    font-size: 280px;
+    font-weight: 700;
+    color: rgba(26,26,26,0.04);
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .header-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  h1 {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .subtitle {
+    margin-top: 16px;
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.7;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  main {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: calc(100vh - 220px);
+  }
+
+  /* ── SIDEBAR ── */
+  aside {
+    border-right: 1px solid var(--line);
+    padding: 48px 32px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .nav-section {
+    margin-bottom: 36px;
+  }
+  .nav-section-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 8px 0;
+    cursor: pointer;
+    border: none;
+    background: none;
+    text-align: left;
+    width: 100%;
+    transition: all 0.2s;
+    border-bottom: 1px solid transparent;
+    text-decoration: none;
+    color: inherit;
+  }
+  .nav-item:hover { color: var(--accent); border-bottom-color: var(--accent); }
+  .nav-item.active { color: var(--accent); font-weight: 500; }
+  .nav-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    min-width: 20px;
+  }
+  .nav-text { font-size: 13px; line-height: 1.4; }
+
+  /* ── CONTENT ── */
+  .content {
+    padding: 48px 64px;
+    max-width: 900px;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .section.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .section-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .section-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 28px;
+    font-weight: 700;
+  }
+
+  /* ── LEVEL TREE (Section 1) ── */
+  .level-tree { display: flex; flex-direction: column; gap: 2px; }
+  .level-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    border: 1px solid var(--line);
+    transition: all 0.2s;
+    cursor: default;
+  }
+  .level-row:hover { border-color: var(--ink); background: white; }
+  .level-tag {
+    padding: 16px 20px;
+    background: var(--paper-dark);
+    border-right: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .level-tag-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .level-tag-text {
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  .level-concepts {
+    padding: 16px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .tag {
+    font-size: 12px;
+    padding: 3px 10px;
+    border: 1px solid var(--line);
+    background: white;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-decoration: none;
+    color: var(--ink);
+    font-family: 'Noto Sans SC', sans-serif;
+  }
+  .tag:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .tag.accent { border-color: var(--accent); color: var(--accent); }
+  .tag.accent:hover { background: var(--accent); color: white; }
+  .tag.blue { border-color: var(--accent2); color: var(--accent2); }
+  .tag.blue:hover { background: var(--accent2); color: white; }
+  .tag.green { border-color: var(--accent3); color: var(--accent3); }
+  .tag.green:hover { background: var(--accent3); color: white; }
+
+  /* ── CONCEPT CARDS (Section 2) ── */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 0;
+  }
+  .timeline-spine {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .timeline-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ink);
+    border: 2px solid var(--paper);
+    outline: 1px solid var(--ink);
+    flex-shrink: 0;
+    margin-top: 20px;
+  }
+  .timeline-line {
+    width: 1px;
+    flex: 1;
+    background: var(--line);
+    min-height: 20px;
+  }
+  .concept-card {
+    margin: 8px 0 8px 0;
+    border: 1px solid var(--line);
+    transition: all 0.2s;
+    overflow: hidden;
+    cursor: pointer;
+  }
+  .concept-card:hover { border-color: var(--ink); box-shadow: 3px 3px 0 var(--ink); transform: translate(-1px,-1px); }
+  .card-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    background: var(--paper-dark);
+    border-bottom: 1px solid var(--line);
+  }
+  .card-stage {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .card-human {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    text-align: right;
+  }
+  .card-body {
+    padding: 16px 20px;
+    display: none;
+  }
+  .card-body.open { display: block; }
+  .card-field {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .card-field-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    padding-top: 2px;
+    letter-spacing: 0.05em;
+  }
+  .card-field-value { color: var(--ink); }
+  .card-field-value.analogy { color: var(--muted); font-style: italic; }
+  .card-keywords {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .kw {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    padding: 2px 8px;
+    border: 1px solid var(--line);
+    color: var(--muted);
+  }
+  .expand-hint {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    float: right;
+    transition: transform 0.2s;
+  }
+  .concept-card.open .expand-hint { transform: rotate(180deg); }
+
+  /* ── COMPARE TABLES (Section 3) ── */
+  .compare-block { margin-bottom: 48px; }
+  .compare-title {
+    font-family: 'Noto Serif SC', serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding-left: 12px;
+    border-left: 3px solid var(--ink);
+  }
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .compare-table th {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 500;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+  .compare-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    line-height: 1.5;
+    vertical-align: top;
+  }
+  .compare-table tr:nth-child(even) td { background: rgba(255,255,255,0.5); }
+  .compare-table tr:hover td { background: white; }
+  .yes { color: var(--accent3); font-weight: 500; }
+  .no  { color: var(--accent);  font-weight: 500; }
+
+  /* ── NETWORK (Section 4) ── */
+  .network-box {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 36px 40px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    line-height: 2.1;
+    letter-spacing: 0.02em;
+    overflow-x: auto;
+  }
+  .tree-root { color: #7eb8e8; font-weight: bold; }
+  .tree-branch { color: #a8d8a8; }
+  .tree-leaf { color: var(--paper); }
+  .tree-sub { color: #c8b8a8; }
+  .tree-comment { color: #888; font-size: 11px; }
+
+  /* ── SAFETY (Section 5) ── */
+  .safety-intro {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--muted);
+    margin-bottom: 32px;
+    padding: 20px;
+    border-left: 3px solid var(--accent);
+    background: rgba(192,57,43,0.04);
+  }
+
+  /* ── QUOTE BLOCK ── */
+  .blockquote {
+    margin: 32px 0;
+    padding: 20px 24px;
+    border-left: 3px solid var(--accent);
+    font-family: 'Noto Serif SC', serif;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--muted);
+    background: rgba(192,57,43,0.04);
+  }
+
+  /* ── SECTION DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 40px 0;
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    header { padding: 40px 24px 32px; }
+    main { grid-template-columns: 1fr; }
+    aside {
+      position: static;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid var(--line);
+      padding: 24px;
+      display: flex;
+      gap: 24px;
+      overflow-x: auto;
+    }
+    .nav-section { margin-bottom: 0; min-width: 140px; }
+    .content { padding: 32px 24px; }
+    .level-row { grid-template-columns: 1fr; }
+    .level-tag { border-right: none; border-bottom: 1px solid var(--line); }
+    .network-box { font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">学习记录 · 知识图谱 · 2026</div>
+  <h1>从高考到职场<br>理解 <em>AI</em></h1>
+  <p class="subtitle">用人类成长的框架，梳理 AI 领域的核心概念——从训练原理到应用工程的完整知识地图。</p>
+</header>
+
+<main>
+  <aside>
+    <div class="nav-section">
+      <div class="nav-section-title">内容导航</div>
+      <a class="nav-item active" onclick="showSection('s1')">
+        <span class="nav-num">01</span>
+        <span class="nav-text">知识版图总览</span>
+      </a>
+      <a class="nav-item" onclick="showSection('s2')">
+        <span class="nav-num">02</span>
+        <span class="nav-text">成长时间轴</span>
+      </a>
+      <a class="nav-item" onclick="showSection('s3')">
+        <span class="nav-num">03</span>
+        <span class="nav-text">关键对比</span>
+      </a>
+      <a class="nav-item" onclick="showSection('s4')">
+        <span class="nav-num">04</span>
+        <span class="nav-text">知识网络图谱</span>
+      </a>
+      <a class="nav-item" onclick="showSection('s5')">
+        <span class="nav-num">05</span>
+        <span class="nav-text">AI 安全</span>
+      </a>
+    </div>
+  </aside>
+
+  <div class="content">
+
+    <!-- ── SECTION 1 ── -->
+    <div class="section active" id="s1">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <span class="section-title">知识版图总览</span>
+      </div>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.7;">
+        所有 AI 概念分为六个层级。点击任意概念标签，可跳转至对应的详细讲解。
+      </p>
+      <div class="level-tree">
+
+        <div class="level-row">
+          <div class="level-tag">
+            <span class="level-tag-num">L1</span>
+            <span class="level-tag-text">方法论层</span>
+          </div>
+          <div class="level-concepts">
+            <a class="tag accent" onclick="goCard('c-ml')">机器学习</a>
+            <a class="tag accent" onclick="goCard('c-dl')">深度学习</a>
+          </div>
+        </div>
+
+        <div class="level-row">
+          <div class="level-tag">
+            <span class="level-tag-num">L2</span>
+            <span class="level-tag-text">模型架构层</span>
+          </div>
+          <div class="level-concepts">
+            <a class="tag blue">Transformer</a>
+            <a class="tag blue">Diffusion 模型</a>
+            <a class="tag blue">多模态模型</a>
+          </div>
+        </div>
+
+        <div class="level-row">
+          <div class="level-tag">
+            <span class="level-tag-num">L3</span>
+            <span class="level-tag-text">模型生命周期层</span>
+          </div>
+          <div class="level-concepts">
+            <a class="tag accent" onclick="goCard('c-pretrain')">预训练</a>
+            <a class="tag accent" onclick="goCard('c-sft')">SFT 监督微调</a>
+            <a class="tag accent" onclick="goCard('c-rlhf')">RLHF</a>
+            <a class="tag accent" onclick="goCard('c-bp')">反向传播</a>
+            <a class="tag accent" onclick="goCard('c-overfit')">过拟合/欠拟合</a>
+          </div>
+        </div>
+
+        <div class="level-row">
+          <div class="level-tag">
+            <span class="level-tag-num">L4</span>
+            <span class="level-tag-text">知识增强层</span>
+          </div>
+          <div class="level-concepts">
+            <a class="tag green" onclick="goCard('c-rag')">RAG 检索增强</a>
+            <a class="tag green" onclick="goCard('c-finetune')">领域微调</a>
+          </div>
+        </div>
+
+        <div class="level-row">
+          <div class="level-tag">
+            <span class="level-tag-num">L5</span>
+            <span class="level-tag-text">产品应用层</span>
+          </div>
+          <div class="level-concepts">
+            <a class="tag">文生图</a>
+            <a class="tag">文生视频</a>
+            <a class="tag">自动编排工具</a>
+          </div>
+        </div>
+
+        <div class="level-row">
+          <div class="level-tag">
+            <span class="level-tag-num">L6</span>
+            <span class="level-tag-text">AI 工程层</span>
+          </div>
+          <div class="level-concepts">
+            <a class="tag accent" onclick="goCard('c-agent')">Agent 智能体</a>
+            <a class="tag" onclick="goCard('c-workflow')">Workflow</a>
+            <a class="tag">Skill</a>
+            <a class="tag">LangChain</a>
+            <a class="tag">AutoGPT</a>
+            <a class="tag accent" onclick="goCard('c-emerge')">涌现</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="blockquote">
+        理解 AI 最好的方式，不是把它当作陌生的机器，而是把它当作一个正在成长的人——它也要经历学习、纠错、培训、上岗，才能真正为你所用。
+      </div>
+    </div>
+
+    <!-- ── SECTION 2 ── -->
+    <div class="section" id="s2">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <span class="section-title">成长时间轴</span>
+      </div>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.7;">
+        沿着「从高考到独当一面的项目经理」这条线，每个 AI 概念都找到了对应位置。点击卡片展开详情。
+      </p>
+
+      <div class="timeline">
+
+        <!-- 预训练 -->
+        <div class="timeline-item">
+          <div class="timeline-spine"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="concept-card" id="c-pretrain" onclick="toggleCard(this)">
+            <div class="card-header">
+              <div>
+                <div class="card-stage">📚 预训练 Pre-training</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="card-human">从出生到高考</div>
+                <span class="expand-hint">↓</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-field">
+                <div class="card-field-label">AI</div>
+                <div class="card-field-value">用海量数据（几乎整个互联网）训练模型，让它掌握语言规律和世界知识</div>
+              </div>
+              <div class="card-field">
+                <div class="card-field-label">类比</div>
+                <div class="card-field-value analogy">一个孩子读了无数书、见了无数事，形成了基础认知——但还不懂怎么「好好工作」</div>
+              </div>
+              <div class="card-keywords">
+                <span class="kw">海量数据</span><span class="kw">通用能力</span><span class="kw">极高成本</span><span class="kw">一次性铸造</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 机器学习/深度学习 -->
+        <div class="timeline-item">
+          <div class="timeline-spine"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="concept-card" id="c-ml" onclick="toggleCard(this)">
+            <div class="card-header">
+              <div><div class="card-stage">🧩 机器学习 / 深度学习</div></div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="card-human">学习这件事本身的原理</div>
+                <span class="expand-hint">↓</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-field">
+                <div class="card-field-label">机器学习</div>
+                <div class="card-field-value">让机器从数据中自动归纳规律，不需要人工逐条编写规则</div>
+              </div>
+              <div class="card-field">
+                <div class="card-field-label">深度学习</div>
+                <div class="card-field-value">机器学习的子集，用多层神经网络处理复杂问题——当代大多数 AI 能力的核心引擎</div>
+              </div>
+              <div class="card-field">
+                <div class="card-field-label">类比</div>
+                <div class="card-field-value analogy">给孩子看一万张猫的照片，让他自己归纳「猫长什么样」，而不是逐条告诉他</div>
+              </div>
+              <div class="card-keywords">
+                <span class="kw">数据驱动</span><span class="kw">神经网络</span><span class="kw">特征提取</span><span class="kw">自动归纳</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 反向传播 -->
+        <div class="timeline-item">
+          <div class="timeline-spine"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="concept-card" id="c-bp" onclick="toggleCard(this)">
+            <div class="card-header">
+              <div><div class="card-stage">✏️ 反向传播 + 梯度下降</div></div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="card-human">备考刷题纠错</div>
+                <span class="expand-hint">↓</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-field">
+                <div class="card-field-label">AI</div>
+                <div class="card-field-value">计算每个参数「该负多少责任」，然后沿着让损失减小的方向更新所有参数</div>
+              </div>
+              <div class="card-field">
+                <div class="card-field-label">类比</div>
+                <div class="card-field-value analogy">考试做错了，从最后一步往前追溯责任链，针对性修正——重复数千亿次</div>
+              </div>
+              <div class="card-keywords">
+                <span class="kw">损失函数</span><span class="kw">梯度</span><span class="kw">链式法则</span><span class="kw">参数更新</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 过拟合 -->
+        <div class="timeline-item">
+          <div class="timeline-spine"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="concept-card" id="c-overfit" onclick="toggleCard(this)">
+            <div class="card-header">
+              <div><div class="card-stage">⚖️ 过拟合 / 欠拟合</div></div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="card-human">应试教育的两种极端</div>
+                <span class="expand-hint">↓</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-field">
+                <div class="card-field-label">过拟合</div>
+                <div class="card-field-value">记住了训练数据的细节，遇到新数据就崩——记住了题目，没理解知识</div>
+              </div>
+              <div class="card-field">
+                <div class="card-field-label">欠拟合</div>
+                <div class="card-field-value">连基本规律都没学好，什么数据都表现差——完全没复习</div>
+              </div>
+              <div class="card-keywords">
+                <span class="kw">泛化能力</span><span class="kw">训练集</span><span class="kw">测试集</span><span class="kw">灾难性遗忘</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SFT -->
+        <div class="timeline-item">
+          <div class="timeline-spine"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="concept-card" id="c-sft" onclick="toggleCard(this)">
+            <div class="card-header">
+              <div><div class="card-stage">🎓 监督微调 SFT</div></div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="card-human">大学专业教育</div>
+                <span class="expand-hint">↓</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-field">
+                <div class="card-field-label">AI</div>
+                <div class="card-field-value">用大量「好的问答示范」训练模型，让它学会对话格式与基本风格</div>
+              </div>
+              <div class="card-field">
+                <div class="card-field-label">类比</div>
+                <div class="card-field-value analogy">新员工入职第一周，先看一批优秀客服录音，模仿学习标准话术</div>
+              </div>
+              <div class="card-keywords">
+                <span class="kw">对话能力</span><span class="kw">示范样本</span><span class="kw">后训练第一步</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RLHF -->
+        <div class="timeline-item">
+          <div class="timeline-spine"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="concept-card" id="c-rlhf" onclick="toggleCard(this)">
+            <div class="card-header">
+              <div><div class="card-stage">🏆 RLHF 强化学习人类反馈</div></div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="card-human">职场绩效反馈</div>
+                <span class="expand-hint">↓</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-field">
+                <div class="card-field-label">AI</div>
+                <div class="card-field-value">让人类评估员对模型多个回答排序，训练奖励模型，再用奖励信号优化语言模型</div>
+              </div>
+              <div class="card-field">
+                <div class="card-field-label">类比</div>
+                <div class="card-field-value analogy">厨师做了三道菜，食客排序打分——没有标准食谱，只有持续的偏好反馈</div>
+              </div>
+              <div class="card-keywords">
+                <span class="kw">奖励模型</span><span class="kw">偏好排序</span><span class="kw">价值对齐</span><span class="kw">安全性</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 微调 -->
+        <div class="timeline-item">
+          <div class="timeline-spine"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="concept-card" id="c-finetune" onclick="toggleCard(this)">
+            <div class="card-header">
+              <div><div class="card-stage">📋 领域微调 Fine-tuning</div></div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="card-human">专项进修与考证</div>
+                <span class="expand-hint">↓</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-field">
+                <div class="card-field-label">AI</div>
+                <div class="card-field-value">用特定领域数据继续训练通用模型，使其在该领域表现大幅提升</div>
+              </div>
+              <div class="card-field">
+                <div class="card-field-label">类比</div>
+                <div class="card-field-value analogy">全科医生参加外科专项培训——底层能力不变，专项能力突飞猛进</div>
+              </div>
+              <div class="card-keywords">
+                <span class="kw">领域适配</span><span class="kw">参数更新</span><span class="kw">小数据</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RAG -->
+        <div class="timeline-item">
+          <div class="timeline-spine"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="concept-card" id="c-rag" onclick="toggleCard(this)">
+            <div class="card-header">
+              <div><div class="card-stage">🔍 RAG 检索增强生成</div></div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="card-human">带资料库工作</div>
+                <span class="expand-hint">↓</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-field">
+                <div class="card-field-label">AI</div>
+                <div class="card-field-value">回答前先去外部知识库检索相关文档，把检索结果作为参考再生成回答</div>
+              </div>
+              <div class="card-field">
+                <div class="card-field-label">类比</div>
+                <div class="card-field-value analogy">咨询顾问接到新项目，先查行业报告，再综合给出建议——他没变聪明，但输出更好了</div>
+              </div>
+              <div class="card-field">
+                <div class="card-field-label">vs 微调</div>
+                <div class="card-field-value">微调是「改变模型本身」，RAG 是「给模型配一个实时图书馆」</div>
+              </div>
+              <div class="card-keywords">
+                <span class="kw">外部知识库</span><span class="kw">实时检索</span><span class="kw">不改变模型</span><span class="kw">减少幻觉</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 涌现 -->
+        <div class="timeline-item">
+          <div class="timeline-spine"><div class="timeline-dot"></div><div class="timeline-line"></div></div>
+          <div class="concept-card" id="c-emerge" onclick="toggleCard(this)">
+            <div class="card-header">
+              <div><div class="card-stage">✨ 涌现 Emergence</div></div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="card-human">能力的非线性跃升</div>
+                <span class="expand-hint">↓</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-field">
+                <div class="card-field-label">AI</div>
+                <div class="card-field-value">规模超过某个临界点后，突然涌现出小规模时完全不存在的能力——不是线性提升，而是质变</div>
+              </div>
+              <div class="card-field">
+                <div class="card-field-label">类比</div>
+                <div class="card-field-value analogy">水加热到99°C还是液体，100°C突然变成蒸汽；背了5000个单词，突然能读懂文章</div>
+              </div>
+              <div class="card-keywords">
+                <span class="kw">临界点</span><span class="kw">不可预测</span><span class="kw">少样本学习</span><span class="kw">思维链推理</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Agent -->
+        <div class="timeline-item">
+          <div class="timeline-spine"><div class="timeline-dot"></div><div class="timeline-line" style="display:none;"></div></div>
+          <div class="concept-card" id="c-agent" onclick="toggleCard(this)">
+            <div class="card-header">
+              <div><div class="card-stage">🧠 Agent 智能体</div></div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="card-human">独当一面的项目经理</div>
+                <span class="expand-hint">↓</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-field">
+                <div class="card-field-label">AI</div>
+                <div class="card-field-value">能自主感知、制定计划、调用工具、多步骤执行复杂目标的 AI 系统</div>
+              </div>
+              <div class="card-field">
+                <div class="card-field-label">类比</div>
+                <div class="card-field-value analogy">你说「帮我出份竞争分析报告」，他不等指导，自己查资料、建框架、写报告——直到完成</div>
+              </div>
+              <div class="card-field">
+                <div class="card-field-label">运作方式</div>
+                <div class="card-field-value">感知目标 → 规划拆解 → 调用工具 → 观察结果 → 动态调整 → 循环至完成</div>
+              </div>
+              <div class="card-keywords">
+                <span class="kw">自主决策</span><span class="kw">工具调用</span><span class="kw">多步推理</span><span class="kw">ReAct 循环</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Workflow -->
+        <div class="timeline-item">
+          <div class="timeline-spine"><div class="timeline-dot"></div><div class="timeline-line" style="display:none;"></div></div>
+          <div class="concept-card" id="c-workflow" onclick="toggleCard(this)">
+            <div class="card-header">
+              <div><div class="card-stage">🔄 Workflow 工作流</div></div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div class="card-human">工厂流水线</div>
+                <span class="expand-hint">↓</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-field">
+                <div class="card-field-label">AI</div>
+                <div class="card-field-value">预先设计好的固定执行流程，步骤顺序不变，不需要动态决策</div>
+              </div>
+              <div class="card-field">
+                <div class="card-field-label">vs Agent</div>
+                <div class="card-field-value analogy">Workflow 是「照剧本演」，Agent 是「即兴发挥」——前者更稳定，后者更灵活</div>
+              </div>
+              <div class="card-keywords">
+                <span class="kw">固定路径</span><span class="kw">低成本</span><span class="kw">高可控性</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── SECTION 3 ── -->
+    <div class="section" id="s3">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <span class="section-title">关键对比</span>
+      </div>
+
+      <div class="compare-block">
+        <div class="compare-title">模型生命周期各阶段</div>
+        <table class="compare-table">
+          <thead><tr><th>阶段</th><th>做什么</th><th>改变模型？</th><th>成本</th></tr></thead>
+          <tbody>
+            <tr><td>预训练</td><td>学习世界知识和语言规律</td><td class="yes">✅ 是</td><td>极高（亿级）</td></tr>
+            <tr><td>后训练 SFT + RLHF</td><td>学会对话、对齐价值观</td><td class="yes">✅ 是</td><td>中等</td></tr>
+            <tr><td>领域微调</td><td>适配特定专业领域</td><td class="yes">✅ 是</td><td>较低</td></tr>
+            <tr><td>RAG</td><td>外挂知识库实时检索</td><td class="no">❌ 否</td><td>极低</td></tr>
+            <tr><td>推理部署</td><td>响应用户实际请求</td><td class="no">❌ 否</td><td>按量计费</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="compare-block">
+        <div class="compare-title">RAG vs 微调——企业落地的选择逻辑</div>
+        <table class="compare-table">
+          <thead><tr><th>场景</th><th>推荐方案</th><th>原因</th></tr></thead>
+          <tbody>
+            <tr><td>知识频繁更新</td><td>RAG</td><td>实时检索，无需重新训练</td></tr>
+            <tr><td>需要引用具体来源</td><td>RAG</td><td>可追溯，透明度高</td></tr>
+            <tr><td>需要特定风格/格式</td><td>微调</td><td>改变模型行为本身</td></tr>
+            <tr><td>领域知识相对固定</td><td>微调</td><td>一次训练，长期受益</td></tr>
+            <tr><td>两者皆有</td><td>RAG + 微调</td><td>结合使用效果最佳</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="compare-block">
+        <div class="compare-title">Agent vs Workflow</div>
+        <table class="compare-table">
+          <thead><tr><th>维度</th><th>Workflow 工作流</th><th>Agent 智能体</th></tr></thead>
+          <tbody>
+            <tr><td>执行路径</td><td>固定，预先设计</td><td>动态，实时决策</td></tr>
+            <tr><td>类比</td><td>工厂流水线</td><td>项目经理</td></tr>
+            <tr><td>适用场景</td><td>流程固定、可预测</td><td>复杂、需动态判断</td></tr>
+            <tr><td>成本</td><td>低</td><td>高</td></tr>
+            <tr><td>可控性</td><td>高</td><td>较低</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── SECTION 4 ── -->
+    <div class="section" id="s4">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <span class="section-title">知识网络图谱</span>
+      </div>
+      <p style="font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.7;">各概念在整体 AI 知识体系中的层级关系与从属结构。</p>
+      <div class="network-box">
+<span class="tree-root">AI（人工智能）</span>
+├── <span class="tree-branch">【方法论层】</span>  <span class="tree-comment">← 学习这件事本身的原理</span>
+│   └── 机器学习 → 深度学习
+│
+├── <span class="tree-branch">【模型架构层】</span>  <span class="tree-comment">← 大脑的结构</span>
+│   ├── Transformer
+│   ├── Diffusion 模型
+│   └── 多模态模型
+│
+├── <span class="tree-branch">【模型生命周期层】</span>  <span class="tree-comment">← 从出生到入职</span>
+│   ├── 预训练 Pre-training
+│   ├── 后训练
+│   │   ├── SFT 监督微调
+│   │   └── RLHF 强化学习对齐
+│   ├── 核心机制：反向传播 + 梯度下降
+│   └── 推理部署 Inference
+│
+├── <span class="tree-branch">【知识增强层】</span>  <span class="tree-comment">← 查资料 vs 进修</span>
+│   ├── RAG  <span class="tree-comment">外挂图书馆，不改变模型</span>
+│   └── 微调 Fine-tuning  <span class="tree-comment">改变模型本身</span>
+│
+├── <span class="tree-branch">【产品应用层】</span>  <span class="tree-comment">← 各类职业岗位</span>
+│   ├── 文生图 · 文生视频
+│   └── 自动编排工具
+│
+└── <span class="tree-branch">【AI 工程层】</span>  <span class="tree-comment">← 独当一面的项目经理</span>
+    └── <span class="tree-root">Agent 智能体</span>
+        ├── 大脑：大语言模型（LLM）
+        ├── 手：Skill / Tool
+        │   └── 搜索 · 代码执行 · 文件读写 · API
+        ├── 流程：Workflow  <span class="tree-comment">固定子任务</span>
+        ├── 知识：RAG  <span class="tree-comment">实时检索</span>
+        └── 框架：LangChain · AutoGPT
+      </div>
+    </div>
+
+    <!-- ── SECTION 5 ── -->
+    <div class="section" id="s5">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <span class="section-title">AI 安全</span>
+      </div>
+      <div class="safety-intro">
+        涌现与对齐是 AI 安全问题的两个核心张力：模型越强大，风险边界越难界定；对齐措施越严格，能力损耗越多。
+      </div>
+
+      <table class="compare-table" style="margin-bottom:32px;">
+        <thead><tr><th>核心问题</th><th>具体表现</th></tr></thead>
+        <tbody>
+          <tr><td>能力边界难界定</td><td>涌现的能力不是被设计的，只能通过测试发现，无法穷举</td></tr>
+          <tr><td>对齐税</td><td>安全措施往往以牺牲部分能力为代价——更保守，但有时更平庸</td></tr>
+          <tr><td>能力放大风险</td><td>更强的模型，潜在危害的量级也更大</td></tr>
+          <tr><td>规避限制更聪明</td><td>大模型更擅长找到迂回绕过安全规则的方式</td></tr>
+          <tr><td>目标错位放大</td><td>细微的价值偏差，在更强的模型上造成更严重的后果</td></tr>
+          <tr><td>部署链条风险</td><td>量化、提示词注入、API 滥用——安全问题在每个环节重现</td></tr>
+        </tbody>
+      </table>
+
+      <div class="blockquote">
+        涌现让模型变得强大，RLHF 让强大的模型变得可用——但两者之间永远存在张力，这是当前 AI 安全研究最核心的挑战。
+      </div>
+
+      <hr class="divider">
+
+      <p style="font-size:13px;color:var(--muted);line-height:1.8;">
+        模型在实验室里对齐得再好，到了真实世界的部署链条里，安全问题会在每一个环节重新涌现。AI 安全不只是训练阶段的问题，它贯穿了从实验室到用户手中的整个旅程。
+      </p>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<script>
+  function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const idx = ['s1','s2','s3','s4','s5'].indexOf(id);
+    document.querySelectorAll('.nav-item')[idx].classList.add('active');
+    document.querySelector('.content').scrollTop = 0;
+    window.scrollTo(0, 0);
+  }
+
+  function toggleCard(card) {
+    const body = card.querySelector('.card-body');
+    const isOpen = card.classList.contains('open');
+    card.classList.toggle('open', !isOpen);
+    body.classList.toggle('open', !isOpen);
+  }
+
+  function goCard(id) {
+    showSection('s2');
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const body = el.querySelector('.card-body');
+      el.classList.add('open');
+      body.classList.add('open');
+    }, 80);
+  }
+</script>
+</body>
+</html>
