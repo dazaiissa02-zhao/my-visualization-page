@@ -1,7 +1,5 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
-import anhuiLogo from '../assets/anhui-logo.png';
-import shanghaiLogo from '../assets/shanghai-logo.png';
 
 const educationData = [
   {
@@ -24,7 +22,7 @@ const educationData = [
       '主持国家级大学生创新创业训练计划项目并结项',
       '院辩论队四辩; 校礼仪队成员参与大型晚会10+'
     ],
-    img: anhuiLogo
+    img: '/安徽农业大学校徽_纯白背景.png'
   },
   {
     id: 'shanghai',
@@ -42,7 +40,7 @@ const educationData = [
       '推免保研',
       '中文系硕士研究生第二党支部宣传委员,党建中心干事; 独立负责宣传工作2年+, 获评“校级样板党支部”。'
     ],
-    img: shanghaiLogo
+    img: '/上海大学校徽_纯白背景.png'
   }
 ];
 
@@ -61,8 +59,12 @@ const ResumeCard = ({ data, onClose }) => (
 
     {/* Header */}
     <div className="flex items-center mb-6 pb-6 border-b border-white/20">
-      <div className="w-20 h-20 rounded-full overflow-hidden border border-white/30 mr-5 shadow-lg shrink-0 flex items-center justify-center bg-white/5">
-        <img src={data.img} alt={data.title} className="w-full h-full object-cover scale-110" />
+      <div className="w-20 h-20 rounded-full overflow-hidden border border-white/30 mr-5 shadow-lg shrink-0 flex items-center justify-center bg-white">
+        {data.img ? (
+          <img src={data.img} alt={data.title} className="w-full h-full object-contain p-2" />
+        ) : (
+          <div className="text-2xl font-serif text-black/80">{data.title[0]}</div>
+        )}
       </div>
       <div>
         <h3 className="text-3xl font-serif tracking-wide drop-shadow-md">{data.title}</h3>

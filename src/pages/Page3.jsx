@@ -4,12 +4,6 @@ import { Html } from '@react-three/drei';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
 
-// Import images for Lovart
-import imgLovartOldPaywall from '../assets/原星流付费墙.png';
-import imgLovartNewPaywall from '../assets/新星流付费墙.jpeg';
-import imgLovartOldHome from '../assets/原星流首页.jpeg';
-import imgLovartNewHome from '../assets/新星流首页.jpeg';
-
 // Import images for Meituan (from public folder)
 const meituanImages = [
   { src: '/商卡信息迭代.png', title: '商卡信息迭代' },
@@ -26,10 +20,9 @@ const baiduImages = [
 
 // Lovart Image Gallery Data
 const lovartImages = [
-  { src: imgLovartOldPaywall, title: '原星流付费墙' },
-  { src: imgLovartNewPaywall, title: '星流付费墙' },
-  { src: imgLovartOldHome, title: '原星流主页' },
-  { src: imgLovartNewHome, title: '星流首页' },
+  { src: '/新星流付费墙.png', title: '星流付费墙' },
+  { src: '/新星流首页.png', title: '星流首页' },
+  { src: '/原星流付费墙.png', title: '原星流付费墙' },
   { src: '/限速策略.png', title: '限速策略' },
   { src: '/团队管理页.png', title: '团队管理页' },
   { src: '/团队版.jpeg', title: '团队版' }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, Phone, X, Copy, Check } from 'lucide-react';
+import { Download, Phone, X, Copy, Check, ChevronDown } from 'lucide-react';
 // Resume file is now served from public folder
 const resumeUrl = '/赵晓婷_上海大学_26届_产品经理.pdf';
 
@@ -202,6 +202,22 @@ export default function Page1() {
           </div>
         </div>
       </div>
+
+      {/* Scroll Down Indicator */}
+      <motion.div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20 pointer-events-none"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 3.5, duration: 1 }}
+      >
+        <span className="text-white/60 text-xs tracking-[0.2em] uppercase font-light" style={{ fontFamily: '"Montserrat", sans-serif' }}>Scroll</span>
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <ChevronDown className="text-white/60" size={24} />
+        </motion.div>
+      </motion.div>
 
       {/* Contact Modal */}
       <AnimatePresence>
