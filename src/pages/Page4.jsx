@@ -182,7 +182,7 @@ const ExpandedCard = ({ orb, onClose, onPrev, onNext, onOpenAIKnowledgeMap }) =>
                            if (match[2] === '/ai-knowledge-map.html') {
                              parts.push(
                                <button 
-                                 key={`link-${idx}-${match.index}`}
+                                 key={`btn-${idx}-${match.index}`} // Unique key
                                  onClick={(e) => {
                                    e.stopPropagation();
                                    if (onOpenAIKnowledgeMap) onOpenAIKnowledgeMap();
@@ -196,7 +196,7 @@ const ExpandedCard = ({ orb, onClose, onPrev, onNext, onOpenAIKnowledgeMap }) =>
                              // Regular Link
                              parts.push(
                               <a 
-                                key={`link-${idx}-${match.index}`}
+                                key={`link-${idx}-${match.index}`} // Unique key
                                 href={match[2]} 
                                 target="_blank" 
                                 rel="noopener noreferrer"
