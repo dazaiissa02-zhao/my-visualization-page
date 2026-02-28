@@ -6,7 +6,7 @@ import * as THREE from 'three';
 
 // Import images for Meituan (from public folder)
 const meituanImages = [
-  { src: '/商卡信息迭代.png', title: '商卡信息迭代' },
+  { src: '/商卡信息迭代.jpeg', title: '商卡信息迭代' },
   { src: '/搜索页.png', title: '搜索场景双栏卡' },
   { src: '/异体卡.jpg', title: '信息流异体卡' }
 ];

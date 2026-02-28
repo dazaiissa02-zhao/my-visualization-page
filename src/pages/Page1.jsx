@@ -205,15 +205,29 @@ export default function Page1() {
 
       {/* Scroll Down Indicator */}
       <motion.div
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20 pointer-events-none"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-20 pointer-events-none text-center"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 3.5, duration: 1 }}
       >
-        <span className="text-white/60 text-xs tracking-[0.2em] uppercase font-light" style={{ fontFamily: '"Montserrat", sans-serif' }}>Scroll</span>
+        <div 
+          className="flex flex-col items-center gap-1"
+          style={{ 
+            fontFamily: '"Montserrat", sans-serif',
+            fontSize: '0.95rem',
+            color: 'rgba(255, 255, 255, 0.75)',
+            textShadow: '0 1px 4px rgba(0, 0, 0, 0.3)',
+            fontWeight: 300
+          }}
+        >
+          <span className="tracking-widest">3 minutes · a journey to know a person, beyond the paper</span>
+          <span style={{ letterSpacing: '0.2em', marginTop: '6px' }}>let's go</span>
+        </div>
+        
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="mt-2"
         >
           <ChevronDown className="text-white/60" size={24} />
         </motion.div>
