@@ -21,10 +21,10 @@ const baiduImages = [
 // Lovart Image Gallery Data
 const lovartImages = [
   { src: '/新星流付费墙.png', title: '星流付费墙' },
-  { src: '/新星流首页.png', title: '星流首页' },
   { src: '/原星流付费墙.png', title: '原星流付费墙' },
+  { src: '/新星流首页.png', title: '星流首页' },
+  { src: '/原星流首页.png', title: '原星流首页' },
   { src: '/限速策略.png', title: '限速策略' },
-  { src: '/团队管理页.png', title: '团队管理页' },
   { src: '/团队版.jpeg', title: '团队版' }
 ];
 

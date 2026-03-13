@@ -53,6 +53,8 @@ const AIKnowledgeMap = ({ onClose }) => {
     }
   ];
 
+  const activeData = stages.find(s => s.id === activeStage);
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -131,56 +133,54 @@ const AIKnowledgeMap = ({ onClose }) => {
           <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none mix-blend-overlay"></div>
           
           <AnimatePresence mode="wait">
-            {stages.map((stage) => (
-              activeStage === stage.id && (
-                <motion.div
-                  key={stage.id}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.4, ease: "easeOut" }}
-                  className="flex-1 p-8 md:p-12 overflow-y-auto relative z-10"
-                >
-                  {/* Header */}
-                  <div className="mb-10">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-medium mb-4">
-                      {stage.icon}
-                      <span>{stage.metaphor}</span>
-                    </div>
-                    <h1 className="text-4xl md:text-5xl font-serif text-white mb-4 leading-tight">
-                      {stage.title}
-                    </h1>
-                    <h2 className="text-xl text-white/50 font-light tracking-wide font-mono">
-                      {stage.subtitle}
-                    </h2>
+            {activeData && (
+              <motion.div
+                key={activeData.id}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="flex-1 p-8 md:p-12 overflow-y-auto relative z-10"
+              >
+                {/* Header */}
+                <div className="mb-10">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs font-medium mb-4">
+                    {activeData.icon}
+                    <span>{activeData.metaphor}</span>
                   </div>
+                  <h1 className="text-4xl md:text-5xl font-serif text-white mb-4 leading-tight">
+                    {activeData.title}
+                  </h1>
+                  <h2 className="text-xl text-white/50 font-light tracking-wide font-mono">
+                    {activeData.subtitle}
+                  </h2>
+                </div>
 
-                  {/* Description */}
-                  <div className="prose prose-invert prose-lg max-w-3xl mb-12">
-                    <p className="text-lg leading-relaxed text-white/80 font-light">
-                      {stage.desc}
-                    </p>
-                  </div>
+                {/* Description */}
+                <div className="prose prose-invert prose-lg max-w-3xl mb-12">
+                  <p className="text-lg leading-relaxed text-white/80 font-light">
+                    {activeData.desc}
+                  </p>
+                </div>
 
-                  {/* Tech Stack */}
-                  <div>
-                    <h4 className="text-sm font-bold text-white/40 uppercase tracking-widest mb-4 border-b border-white/10 pb-2 inline-block">
-                      关键技术概念
-                    </h4>
-                    <div className="flex flex-wrap gap-3">
-                      {stage.tech.map((tech, i) => (
-                        <div 
-                          key={i}
-                          className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-blue-200/80 hover:bg-white/10 hover:border-white/20 transition-colors cursor-default"
-                        >
-                          {tech}
-                        </div>
-                      ))}
-                    </div>
+                {/* Tech Stack */}
+                <div>
+                  <h4 className="text-sm font-bold text-white/40 uppercase tracking-widest mb-4 border-b border-white/10 pb-2 inline-block">
+                    关键技术概念
+                  </h4>
+                  <div className="flex flex-wrap gap-3">
+                    {activeData.tech.map((tech, i) => (
+                      <div 
+                        key={i}
+                        className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-blue-200/80 hover:bg-white/10 hover:border-white/20 transition-colors cursor-default"
+                      >
+                        {tech}
+                      </div>
+                    ))}
                   </div>
-                </motion.div>
-              )
-            ))}
+                </div>
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
       </motion.div>

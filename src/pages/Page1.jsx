@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, Phone, X, Copy, Check, ChevronDown } from 'lucide-react';
+import { Download, Phone, X, Copy, Check, ChevronDown, Mail } from 'lucide-react';
 // Resume file is now served from public folder
-const resumeUrl = '/赵晓婷_上海大学_26届_产品经理.pdf';
+const resumeUrl = '/赵晓婷-上海大学-26届-产品经理.pdf';
 
 export default function Page1() {
   const [bgLoaded, setBgLoaded] = useState(true); // Always true as background is handled globally
   const [showContactModal, setShowContactModal] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [emailCopied, setEmailCopied] = useState(false);
 
   const lines = [
     "Hello! I am ",
@@ -68,11 +69,17 @@ export default function Page1() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleEmailCopy = () => {
+    navigator.clipboard.writeText('zxt.zz@foxmail.com');
+    setEmailCopied(true);
+    setTimeout(() => setEmailCopied(false), 2000);
+  };
+
   // Create download link dynamically or use an anchor tag directly
   const handleDownload = () => {
     const link = document.createElement('a');
     link.href = resumeUrl;
-    link.download = '赵晓婷_上海大学_26届_产品经理.pdf';
+    link.download = '赵晓婷-上海大学-26届-产品经理.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -166,8 +173,8 @@ export default function Page1() {
               animate={bgLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
               whileHover={{ scale: 1.05 }}
               transition={{ 
-                opacity: { delay: 2.5, duration: 0.8 },
-                y: { delay: 2.5, duration: 0.8 },
+                opacity: { delay: 2.0, duration: 0.8 },
+                y: { delay: 2.0, duration: 0.8 },
                 scale: { duration: 0.2 }
               }}
               onClick={handleDownload}
@@ -190,8 +197,8 @@ export default function Page1() {
               animate={bgLoaded ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
               whileHover={{ scale: 1.05 }}
               transition={{ 
-                opacity: { delay: 2.7, duration: 0.8 },
-                y: { delay: 2.7, duration: 0.8 },
+                opacity: { delay: 2.2, duration: 0.8 },
+                y: { delay: 2.2, duration: 0.8 },
                 scale: { duration: 0.2 }
               }}
               onClick={() => setShowContactModal(true)}
@@ -277,14 +284,36 @@ export default function Page1() {
                     {copied ? <Check size={20} className="text-green-400" /> : <Copy size={20} />}
                   </button>
                 </div>
+
+                <div className="flex items-center gap-4 bg-white/5 px-6 py-3 rounded-xl border border-white/10 w-full justify-between group">
+                  <span className="text-lg text-[#EDE8E3] font-mono tracking-wider font-semibold drop-shadow-sm truncate">zxt.zz@foxmail.com</span>
+                  <button 
+                    onClick={handleEmailCopy}
+                    className="text-white/60 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg shrink-0"
+                    title="复制邮箱"
+                  >
+                    {emailCopied ? <Check size={20} className="text-green-400" /> : <Copy size={20} />}
+                  </button>
+                </div>
                 
-                <a 
-                  href="tel:19855535582"
-                  className="w-full py-3 bg-white/15 border border-white/40 text-[#EDE8E3] font-medium rounded-xl hover:bg-white/25 transition-colors backdrop-blur-sm"
-                  style={{ fontFamily: '"Noto Serif SC", serif' }}
-                >
-                  立即拨打
-                </a>
+                <div className="flex gap-3 w-full">
+                  <a 
+                    href="tel:19855535582"
+                    className="flex-1 py-3 bg-white/15 border border-white/40 text-[#EDE8E3] font-medium rounded-xl hover:bg-white/25 transition-colors backdrop-blur-sm flex items-center justify-center gap-2"
+                    style={{ fontFamily: '"Noto Serif SC", serif' }}
+                  >
+                    <Phone size={18} />
+                    立即拨打
+                  </a>
+                  <a 
+                    href="mailto:zxt.zz@foxmail.com"
+                    className="flex-1 py-3 bg-white/15 border border-white/40 text-[#EDE8E3] font-medium rounded-xl hover:bg-white/25 transition-colors backdrop-blur-sm flex items-center justify-center gap-2"
+                    style={{ fontFamily: '"Noto Serif SC", serif' }}
+                  >
+                    <Mail size={18} />
+                    发送邮件
+                  </a>
+                </div>
               </div>
             </motion.div>
           </motion.div>
