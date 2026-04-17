@@ -11,8 +11,8 @@
       "offsetY": -80,
       "status": "已上线",
       "statusTone": "green",
-      "linkLabel": "zhaoxiaoting.vercel.app",
-      "linkUrl": "https://zhaoxiaoting.vercel.app/",
+      "linkLabel": "my-visualization-page.vercel.app",
+      "linkUrl": "https://my-visualization-page.vercel.app/",
       "tagline": "这个项目想证明：我能把一个表达问题，用产品思维重新定义，再用 AI 推进到上线。",
       "sections": [
         {
