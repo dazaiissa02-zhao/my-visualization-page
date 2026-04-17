@@ -18,14 +18,58 @@ const baiduImages = [
   { src: '/现金券流转.png', title: '现金券流转' }
 ];
 
-// Lovart Image Gallery Data
-const lovartImages = [
-  { src: '/新星流付费墙.png', title: '星流付费墙' },
-  { src: '/原星流付费墙.png', title: '原星流付费墙' },
-  { src: '/新星流首页.png', title: '星流首页' },
-  { src: '/原星流首页.png', title: '原星流首页' },
-  { src: '/限速策略.png', title: '限速策略' },
-  { src: '/团队版.jpeg', title: '团队版' }
+// Lovart is a denser experience, so it opens as a constellation of sub-projects.
+const lovartProjects = [
+  {
+    id: 'team',
+    title: '席位制团队版（0-1）',
+    subtitle: '验证组织级付费可行性',
+    tags: ['在期团队 420 个', '平均8席位', '月GMV 约180万美金'],
+    problem: '基于用户访谈与竞品调研，识别组织用户核心诉求并非单纯协作，而是在可控成本下获得成员管理、统一结算与资源弹性分配能力。',
+    action: '主导“席位费 + 团队共享积分池”混合方案，以席位费承接成员权限、统一结算、团队管理等组织价值，以共享积分池承接 AI 生成消耗；并设计共享、均分、自定义上限三种积分分配模式，配套团队空间、资产隔离、离职流转等机制。',
+    result: '首期在期团队 420 个，平均席位 8 人，月度 GMV 约 180 万美金，验证了组织级付费模式的可行性。',
+    images: [
+      { src: '/团队版.jpeg', title: '团队版' },
+      { src: '/团队管理页.png', title: '团队管理页' }
+    ]
+  },
+  {
+    id: 'commercialization',
+    title: '星流商业化重构',
+    subtitle: '匹配产品价值升级的会员体系改版',
+    tags: ['高端SKU +9pp', 'ARPU +44%', '迁移留存率 86%'],
+    problem: '产品价值提升后，原有商业体系承接不足，需要通过 SKU、订阅机制与存量迁移方案同步升级，释放高价值用户付费空间。',
+    action: '将原 3 档 SKU 重构为 4 档，顶档从 ¥199 抬升至 ¥999，并收窄年付折扣，将年付从“拉新折扣”转为“留存锚点”；同时将订阅机制由单会员排他重构为多会员并行，并基于“账号唯一 + 资产隔离”的双版本并行机制完成旧版用户权益承接。',
+    result: '高端 SKU 的 GMV 占比提升 9pp，ARPU 提升 44%，存量活跃用户迁移留存率达 86%。',
+    images: [
+      { src: '/新星流付费墙.png', title: '新星流付费墙' },
+      { src: '/原星流付费墙.png', title: '原星流付费墙' },
+      { src: '/新星流首页.png', title: '新星流首页' },
+      { src: '/原星流首页.png', title: '原星流首页' }
+    ]
+  },
+  {
+    id: 'multimodal',
+    title: '多模态模型产品化',
+    subtitle: '推动模型能力向付费价值转化',
+    tags: ['渗透率 7%', '高端SKU +8pp', '图像/视频/语音'],
+    problem: '多模态模型能力分散在 prompt 参数与模型语法中，非技术用户使用门槛高，同时涉及真人生成、版权风险等场景，需要完成合规与商业适配。',
+    action: '主导 Midjourney V7、MiniMax speech-2.8、Seedance 2.0、可灵 3.0 + Omni 等模型接入，覆盖图像、视频、语音三类创作能力；将专业参数前置为 UI 主控件，并设计活体检测核验与素材免二次审核机制，将新模型纳入会员分层权益体系。',
+    result: '新增模型用户渗透率达 7%，该群体高端 SKU 占比比未使用用户高 8pp，使新模型能力成为高端 SKU 的差异化付费驱动力。',
+    images: []
+  },
+  {
+    id: 'compute',
+    title: '算力双轨调度',
+    subtitle: '让“0积分无限生成”承诺可持续成立',
+    tags: ['成本 -53%', '队列切换率 33%', '加速消耗 40%'],
+    problem: '会员“0 积分无限生成”权益带来成本与体验矛盾，需要将问题从短期控成本，重构为保障权益可持续运行并释放加速付费空间。',
+    action: '设计“0 积分队列 + 积分加速队列”双轨机制，按预算消耗梯度建立阶梯式降速，将“无限生成”拆解为“无限可用 + 加速优先”；并在全局入口、Agent 对话框和画布生成中分别承接偏好预设、任务发起切换与生成中决策。',
+    result: '单模型成本中位数降低 53%，队列切换率 33%，加速场景积分消耗占比达 40%。',
+    images: [
+      { src: '/限速策略.png', title: '算力双轨调度' }
+    ]
+  }
 ];
 
 function Orbit({ radius, speed, children, paused }) {
@@ -224,6 +268,160 @@ function RightPanel({ data, onImageClick }) {
   );
 }
 
+function LovartConstellationPanel({ data, selectedProjectId, onSelectProject, onImageClick }) {
+  const selectedProject = lovartProjects.find((project) => project.id === selectedProjectId) || lovartProjects[0];
+
+  return (
+    <>
+      <motion.div
+        initial={{ x: -100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        exit={{ x: -100, opacity: 0 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        className="absolute left-[4vw] top-16 bottom-16 w-[35vw] glass-panel p-7 rounded-3xl border border-white/10 bg-black/20 backdrop-blur-md shadow-[0_0_24px_rgba(170,190,255,0.12)] flex flex-col pointer-events-auto z-50"
+        style={{ fontFamily: '"Noto Serif SC", serif' }}
+      >
+        <div className="mb-5">
+          <div className="flex items-center gap-3 text-blue-50/70 text-xs tracking-[0.35em] uppercase mb-3">
+            <span className="h-px w-10 bg-blue-100/40" />
+            Lovart Project Cluster
+          </div>
+          <h2 className="text-4xl font-serif text-blue-100 mb-2 tracking-wide drop-shadow-lg">
+            {data.project}
+          </h2>
+          <div className="text-blue-50/90 text-base uppercase tracking-wider font-medium drop-shadow-md">{data.dept}</div>
+          <div className="text-blue-50/80 text-sm mt-1 font-serif drop-shadow-md">{data.time} | {data.role}</div>
+          <p className="mt-5 text-blue-50/85 text-base leading-relaxed text-justify">
+            围绕 AIGC 产品商业化，从订阅体系、算力成本、团队付费到策略调研拆解成 4 个项目节点。点击任意星点，可以在右侧切换对应细节与项目图。
+          </p>
+        </div>
+
+        <div className="relative flex-1 min-h-0">
+          <div className="absolute left-6 top-5 bottom-5 w-px bg-gradient-to-b from-white/0 via-blue-100/35 to-white/0" />
+          <div className="h-full overflow-y-auto pr-2 custom-scrollbar space-y-3">
+            {lovartProjects.map((project, index) => {
+              const isActive = project.id === selectedProject.id;
+              return (
+                <motion.button
+                  key={project.id}
+                  type="button"
+                  onClick={() => onSelectProject(project.id)}
+                  className={`relative w-full text-left rounded-2xl border p-4 pl-14 transition-all duration-300 ${
+                    isActive
+                      ? 'bg-white/18 border-blue-100/60 shadow-[0_0_26px_rgba(180,205,255,0.2)]'
+                      : 'bg-white/[0.06] border-white/10 hover:bg-white/10 hover:border-white/25'
+                  }`}
+                  whileHover={{ x: 4 }}
+                >
+                  <span className={`absolute left-4 top-5 flex h-7 w-7 items-center justify-center rounded-full border text-xs font-semibold ${
+                    isActive
+                      ? 'border-blue-100 bg-blue-100/25 text-white shadow-[0_0_14px_rgba(190,215,255,0.55)]'
+                      : 'border-white/25 bg-white/10 text-white/60'
+                  }`}>
+                    {index + 1}
+                  </span>
+                  <div className="text-blue-50 text-lg font-semibold tracking-wide">{project.title}</div>
+                  <div className="mt-1 text-sm text-blue-50/65 tracking-widest">{project.subtitle}</div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {project.tags.map((tag) => (
+                      <span key={tag} className="rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-xs text-blue-50/85">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+      </motion.div>
+
+      <motion.div
+        key={selectedProject.id}
+        initial={{ x: 100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        exit={{ x: 100, opacity: 0 }}
+        transition={{ type: "spring", damping: 25, stiffness: 300 }}
+        className="absolute right-[4vw] top-16 bottom-16 w-[55vw] glass-panel p-7 rounded-3xl border border-white/10 bg-black/20 backdrop-blur-md shadow-[0_0_24px_rgba(170,190,255,0.12)] flex flex-col pointer-events-auto z-50"
+        style={{ fontFamily: '"Noto Serif SC", serif' }}
+      >
+        <div className="flex items-start justify-between gap-6 border-b border-white/15 pb-5">
+          <div>
+            <div className="text-blue-50/60 text-xs tracking-[0.35em] uppercase mb-2">Selected Orbit</div>
+            <h3 className="text-3xl font-serif text-blue-100 tracking-wide drop-shadow-lg">{selectedProject.title}</h3>
+            <p className="mt-2 text-blue-50/70 tracking-widest">{selectedProject.subtitle}</p>
+          </div>
+          <div className="hidden xl:flex items-center gap-2 pt-2">
+            {lovartProjects.map((project) => (
+              <button
+                key={project.id}
+                type="button"
+                aria-label={project.title}
+                onClick={() => onSelectProject(project.id)}
+                className={`h-3 rounded-full transition-all ${
+                  project.id === selectedProject.id
+                    ? 'w-10 bg-blue-100 shadow-[0_0_14px_rgba(190,215,255,0.75)]'
+                    : 'w-3 bg-white/25 hover:bg-white/45'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="flex-1 min-h-0 overflow-y-auto pr-2 custom-scrollbar">
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 py-6">
+            {[
+              ['问题背景', selectedProject.problem],
+              ['我的动作', selectedProject.action],
+              ['结果沉淀', selectedProject.result]
+            ].map(([title, content]) => (
+              <div key={title} className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
+                <div className="text-blue-200 text-base font-bold mb-2">{title}</div>
+                <p className="text-blue-50/86 text-sm leading-relaxed text-justify">{content}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="text-xl text-blue-100 tracking-wide">项目图谱</h4>
+              {selectedProject.images.length > 0 && (
+                <span className="text-xs text-blue-50/55 tracking-[0.25em]">click to zoom</span>
+              )}
+            </div>
+            {selectedProject.images.length > 0 ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {selectedProject.images.map((img) => (
+                  <button
+                    key={img.src}
+                    type="button"
+                    className="group text-left cursor-zoom-in"
+                    onClick={() => onImageClick(img.src)}
+                  >
+                    <div className="aspect-video w-full overflow-hidden rounded-2xl border border-white/10 bg-black/45 shadow-lg">
+                      <img
+                        src={img.src}
+                        alt={img.title}
+                        loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                    <p className="mt-2 text-center text-sm text-blue-50/75">{img.title}</p>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="flex min-h-[180px] items-center justify-center rounded-2xl border border-dashed border-white/15 bg-white/[0.04] text-blue-50/55">
+                该项目图示待补充
+              </div>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    </>
+  );
+}
+
 // Navigation Arrows
 function NavigationArrows({ onPrev, onNext }) {
   return (
@@ -281,6 +479,7 @@ function ImageLightbox({ src, onClose }) {
 
 export default function Page3() {
   const [activeProject, setActiveProject] = useState(null); // 'baidu' | 'meituan' | 'lovart' | null
+  const [activeLovartProject, setActiveLovartProject] = useState(lovartProjects[0].id);
   const [previewImage, setPreviewImage] = useState(null);
 
   const experiences = [
@@ -357,7 +556,7 @@ export default function Page3() {
           content: "基于多成员协作需求，从0到1设计并上线席位制团队版，构建团队成员管理、权限与积分共享机制，解决个人订阅模式下协作与费用分摊问题。上线后团队平均席位数8人，月度GMV达178.5万，验证了AIGC产品在团队协作场景下的付费可行性。"
         }
       ],
-      images: lovartImages
+      images: []
     }
   ];
 
@@ -433,7 +632,7 @@ export default function Page3() {
         {/* Orbits */}
         <group>
           <Orbit radius={1.4} speed={0.0005} paused={!!activeProject}>
-            <PlanetNode {...experiences.find(e => e.id === 'lovart')} onClick={() => setActiveProject('lovart')} hidden={!!activeProject} />
+            <PlanetNode {...experiences.find(e => e.id === 'lovart')} onClick={() => { setActiveProject('lovart'); setActiveLovartProject(lovartProjects[0].id); }} hidden={!!activeProject} />
           </Orbit>
           <Orbit radius={2.3} speed={0.0003} paused={!!activeProject}>
             <PlanetNode {...experiences.find(e => e.id === 'meituan')} onClick={() => setActiveProject('meituan')} hidden={!!activeProject} />
@@ -459,8 +658,19 @@ export default function Page3() {
       <AnimatePresence mode="wait">
         {activeProject && activeData && (
           <React.Fragment key={activeProject}>
-            <LeftPanel data={activeData} />
-            <RightPanel data={activeData} onImageClick={setPreviewImage} />
+            {activeProject === 'lovart' ? (
+              <LovartConstellationPanel
+                data={activeData}
+                selectedProjectId={activeLovartProject}
+                onSelectProject={setActiveLovartProject}
+                onImageClick={setPreviewImage}
+              />
+            ) : (
+              <>
+                <LeftPanel data={activeData} />
+                <RightPanel data={activeData} onImageClick={setPreviewImage} />
+              </>
+            )}
           </React.Fragment>
         )}
       </AnimatePresence>

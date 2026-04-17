@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, Phone, X, Copy, Check } from 'lucide-react';
 
-const resumeUrl = '/赵晓婷_上海大学_26届_产品经理.pdf';
+const resumeUrl = '/赵晓婷-上海大学-26届-产品经理.pdf';
 
 export default function Page5() {
   const [bgLoaded, setBgLoaded] = useState(true);
@@ -71,7 +71,7 @@ export default function Page5() {
   const handleDownload = () => {
     const link = document.createElement('a');
     link.href = resumeUrl;
-    link.download = '赵晓婷_上海大学_26届_产品经理.pdf';
+    link.download = '赵晓婷-上海大学-26届-产品经理.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
