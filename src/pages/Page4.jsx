@@ -1,17 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, X } from 'lucide-react';
 import page4Data from '../data/page4Data.json';
 import { portfolioDrawerData } from '../data/portfolioDrawerData';
+import AnchorStoryExperience from '../components/AnchorStoryExperience';
 
 const page4Font = '"Noto Serif SC", serif';
-
-const getStatusClass = (tone) => (
-  tone === 'green'
-    ? 'border-emerald-300/45 bg-emerald-300/10 text-emerald-100'
-    : 'border-rose-300/45 bg-rose-300/10 text-rose-100'
-);
-
 
 // ── 弹窗内的视觉占位区 ───────────────────────────────────
 // 作品一：截图占位，hover 显示「打开在线版」
@@ -61,15 +55,50 @@ function PlaceholderSlot({ label, sublabel }) {
   );
 }
 
+function PrototypeGallerySlot({ items }) {
+  return (
+    <div className="grid gap-5 md:grid-cols-2">
+      {items.map((item) => (
+        <a
+          key={item.title}
+          href={item.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] transition-all hover:border-white/25 hover:bg-white/[0.06]"
+        >
+          <div className="aspect-[4/3] overflow-hidden bg-black/20">
+            <img
+              src={item.src}
+              alt={item.title}
+              loading="lazy"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+            />
+          </div>
+          <div className="flex items-center justify-between gap-4 border-t border-white/8 px-4 py-3">
+            <span className="text-sm text-white/78" style={{ fontFamily: page4Font }}>
+              {item.title}
+            </span>
+            <span className="inline-flex items-center gap-1 text-xs text-white/50 transition-colors group-hover:text-white/80">
+              查看原型
+              <ExternalLink size={10} />
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  );
+}
+
 function ExpandedCard({ orb, onClose, onPrev, onNext }) {
   // 从 portfolioDrawerData 找到对应这颗星球的新内容
   const work = portfolioDrawerData.find((d) => d.id === orb?.id);
+  const isAnchorStory = work?.visual?.type === 'anchor-story';
 
   if (!orb || !work) return null;
 
   return (
     <>
-      {/* 遮罩 —— 保持和原来一样的轻度模糊 */}
+      {/* 遮罩 —— 轻度模糊，保留原本的通透感 */}
       <motion.div
         className="fixed inset-0 z-40 bg-black/18 backdrop-blur-[2px]"
         initial={{ opacity: 0 }}
@@ -78,16 +107,17 @@ function ExpandedCard({ orb, onClose, onPrev, onNext }) {
         onClick={onClose}
       />
 
-      {/* 居中弹窗外框 —— 完全不变 */}
+      {/* 居中弹窗外框 */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 pointer-events-none">
         <motion.div
           initial={{ opacity: 0, y: 24, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 24, scale: 0.97 }}
           transition={{ type: 'spring', damping: 24, stiffness: 180 }}
-          className="pointer-events-auto relative w-[90vw] max-w-[1180px] max-h-[84vh] overflow-hidden rounded-[30px] border border-white/[0.12] shadow-[0_30px_90px_rgba(0,0,0,0.35)]"
-          style={{ background: 'linear-gradient(145deg, rgba(22,12,48,0.62) 0%, rgba(38,14,62,0.52) 50%, rgba(22,12,48,0.62) 100%)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }}
-          style={{ fontFamily: page4Font }}
+          className={`pointer-events-auto relative w-[92vw] ${isAnchorStory ? 'max-w-[1320px] max-h-[88vh]' : 'max-w-[1180px] max-h-[84vh]'} overflow-hidden rounded-[30px] border border-white/10 bg-black/20 backdrop-blur-md shadow-[0_0_10px_rgba(0,0,0,0.2)]`}
+          style={{
+            fontFamily: page4Font
+          }}
           onClick={(e) => e.stopPropagation()}
         >
           {/* 关闭按钮 */}
@@ -117,7 +147,10 @@ function ExpandedCard({ orb, onClose, onPrev, onNext }) {
           </button>
 
           {/* ── 内容区（线性滚动，无 tab）── */}
-          <div className="max-h-[84vh] overflow-y-auto custom-scrollbar px-6 py-7 md:px-10 md:py-9">
+          <div className={`${isAnchorStory ? 'max-h-[88vh] px-0 py-0' : 'max-h-[84vh] px-6 py-7 md:px-10 md:py-9'} overflow-y-auto custom-scrollbar`}>
+            {isAnchorStory ? (
+              <AnchorStoryExperience work={work} />
+            ) : (
             <div className="mx-auto max-w-[780px] space-y-7">
 
               {/* 顶部：状态标签 + 标题 + 副标题 */}
@@ -158,14 +191,20 @@ function ExpandedCard({ orb, onClose, onPrev, onNext }) {
               </div>
 
               {/* 主视觉占位 */}
-              {work.visual.type === 'screenshot' ? (
-                <ScreenshotSlot hoverLink={work.visual.hoverLink} />
-              ) : (
-                <PlaceholderSlot label={work.visual.label} sublabel={work.visual.sublabel} />
-              )}
+              {work.visual.type !== 'none' && (
+                <>
+                  {work.visual.type === 'screenshot' ? (
+                    <ScreenshotSlot hoverLink={work.visual.hoverLink} />
+                  ) : work.visual.type === 'prototype-gallery' ? (
+                    <PrototypeGallerySlot items={work.visual.items} />
+                  ) : (
+                    <PlaceholderSlot label={work.visual.label} sublabel={work.visual.sublabel} />
+                  )}
 
-              {/* 细分隔线 */}
-              <div className="border-t border-white/10" />
+                  {/* 细分隔线 */}
+                  <div className="border-t border-white/10" />
+                </>
+              )}
 
               {/* 正文：三个 ◦ 小标题段落，线性滚动 */}
               <div className="space-y-8">
@@ -233,6 +272,7 @@ function ExpandedCard({ orb, onClose, onPrev, onNext }) {
               </div>
 
             </div>
+            )}
           </div>
         </motion.div>
       </div>
@@ -296,7 +336,7 @@ export default function Page4() {
 
       <div
         className="absolute top-1/2 left-1/2 z-10 -translate-x-1/2 -translate-y-1/2 pointer-events-none transition-opacity duration-500"
-        style={{ opacity: isHoveringCluster ? 0 : 1 }}
+        style={{ opacity: isHoveringCluster || activeOrbId ? 0 : 1 }}
       >
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -397,7 +437,7 @@ export default function Page4() {
                     <span className="text-2xl font-serif tracking-wide text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.48)]">
                       {orb.title}
                     </span>
-                    <span className="mt-2 text-sm leading-relaxed text-white/68 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+                    <span className="mt-2 text-sm leading-relaxed text-white/68 font-serif drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
                       {orb.hoverText}
                     </span>
                   </motion.div>

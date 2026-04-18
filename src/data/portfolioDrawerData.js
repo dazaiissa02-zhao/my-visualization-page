@@ -22,13 +22,9 @@ export const portfolioDrawerData = [
     title: '个人可视化网页',
     subtitle: '让一次自我介绍，变成一段可被走进的旅程',
 
-    // 主视觉位（类型：screenshot = 网页预览截图占位，含 hover 浮层）
+    // 主视觉位：作品一直接通过外链访问，不再展示占位截图
     visual: {
-      type: 'screenshot',
-      hoverLink: {
-        label: '▶ 打开在线版',
-        url: 'https://zhaoxiaoting.vercel.app/',
-      },
+      type: 'none',
     },
 
     // 正文——三个小标题段落
@@ -88,12 +84,9 @@ export const portfolioDrawerData = [
     title: 'Anchor',
     subtitle: '在念头分叉的时刻，替您守住当下这件事',
 
-    // 主视觉位（类型：placeholder = 产品机制图占位，dashed border）
+    // 主视觉位：可直接浏览的 Anchor 视觉草图
     visual: {
-      type: 'placeholder',
-      label: '产品机制图 · 待补',
-      sublabel:
-        '将展示 Anchor 的核心结构：当前锚点 / 下一步动作 / 闪念入口 / 回流时刻',
+      type: 'anchor-story',
     },
 
     sections: [
@@ -139,18 +132,27 @@ export const portfolioDrawerData = [
 
     exitLink: {
       label: 'GitHub 主页',
-      url: 'https://github.com/dazaiissa02-zhao',
+      url: 'https://github.com/dazaiissa02-zhao/prototype-hub',
     },
 
     title: 'AI 赋能的 PM 工作流',
     subtitle: '不是一份工具清单，而是一种工作方式的重新组织',
 
-    // 主视觉位（类型：placeholder = 工作流结构图占位）
+    // 主视觉位：两张可点击的交互原型图
     visual: {
-      type: 'placeholder',
-      label: '工作流结构图 · 待补',
-      sublabel:
-        '将展示四段工作流：输入 / 分析 / 输出 / 沉淀，以及 AI 和人的分工',
+      type: 'prototype-gallery',
+      items: [
+        {
+          title: 'MJ Prototype',
+          src: '/MJ7 prototype.png',
+          url: 'https://dazaiissa02-zhao.github.io/prototype-hub/prototypes/mj7/',
+        },
+        {
+          title: 'MiniMax Prototype',
+          src: '/MiniMax speech prototype.png',
+          url: 'https://dazaiissa02-zhao.github.io/prototype-hub/prototypes/minimax-speech/',
+        },
+      ],
     },
 
     sections: [
@@ -173,27 +175,14 @@ export const portfolioDrawerData = [
 
     footer: {
       chips: null,
-      // 相关仓库 chips（作品三特有，每个可点击跳转）
       repoChips: [
         {
           label: 'prototype-hub',
           url: 'https://github.com/dazaiissa02-zhao/prototype-hub',
         },
-        {
-          label: 'libtv-author-tag-admin',
-          url: 'https://github.com/dazaiissa02-zhao/libtv-author-tag-admin',
-        },
-        {
-          label: 'minimax-speech-prototype',
-          url: 'https://github.com/dazaiissa02-zhao/minimax-speech-prototype',
-        },
-        {
-          label: 'youchuan-generator-prototype',
-          url: 'https://github.com/dazaiissa02-zhao/youchuan-generator-prototype',
-        },
       ],
       links: [
-        { label: '📂 GitHub 主页', url: 'https://github.com/dazaiissa02-zhao' },
+        { label: '📂 GitHub 主页', url: 'https://github.com/dazaiissa02-zhao/prototype-hub' },
       ],
       note: null,
       quote: '工具在变，但做事的人，始终是自己。',

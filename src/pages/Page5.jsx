@@ -179,7 +179,7 @@ export default function Page5() {
         className="absolute bottom-8 left-1/2 -translate-x-1/2 text-sm text-white/50 tracking-widest pointer-events-none" 
         style={{ fontFamily: '"Noto Serif SC", serif' }} 
       > 
-        © 2025 赵晓婷 · 用AI构建，用心表达 
+        © 2026 赵晓婷 · 用AI构建，用心表达 
       </motion.p>
 
       {/* Contact Modal */}

@@ -29,7 +29,7 @@ const lovartProjects = [
     action: '主导“席位费 + 团队共享积分池”混合方案，以席位费承接成员权限、统一结算、团队管理等组织价值，以共享积分池承接 AI 生成消耗；并设计共享、均分、自定义上限三种积分分配模式，配套团队空间、资产隔离、离职流转等机制。',
     result: '首期在期团队 420 个，平均席位 8 人，月度 GMV 约 180 万美金，验证了组织级付费模式的可行性。',
     images: [
-      { src: '/团队版.jpeg', title: '团队版' },
+      { src: '/团队版.png', title: '团队版' },
       { src: '/团队管理页.png', title: '团队管理页' }
     ]
   },
@@ -56,7 +56,10 @@ const lovartProjects = [
     problem: '多模态模型能力分散在 prompt 参数与模型语法中，非技术用户使用门槛高，同时涉及真人生成、版权风险等场景，需要完成合规与商业适配。',
     action: '主导 Midjourney V7、MiniMax speech-2.8、Seedance 2.0、可灵 3.0 + Omni 等模型接入，覆盖图像、视频、语音三类创作能力；将专业参数前置为 UI 主控件，并设计活体检测核验与素材免二次审核机制，将新模型纳入会员分层权益体系。',
     result: '新增模型用户渗透率达 7%，该群体高端 SKU 占比比未使用用户高 8pp，使新模型能力成为高端 SKU 的差异化付费驱动力。',
-    images: []
+    images: [
+      { src: '/MJ7 prototype.png', title: 'MJ Prototype' },
+      { src: '/MiniMax speech prototype.png', title: 'MiniMax Prototype' }
+    ]
   },
   {
     id: 'compute',
@@ -67,7 +70,8 @@ const lovartProjects = [
     action: '设计“0 积分队列 + 积分加速队列”双轨机制，按预算消耗梯度建立阶梯式降速，将“无限生成”拆解为“无限可用 + 加速优先”；并在全局入口、Agent 对话框和画布生成中分别承接偏好预设、任务发起切换与生成中决策。',
     result: '单模型成本中位数降低 53%，队列切换率 33%，加速场景积分消耗占比达 40%。',
     images: [
-      { src: '/限速策略.png', title: '算力双轨调度' }
+      { src: '/限速策略.png', title: '算力双轨调度' },
+      { src: '/生成点位.png', title: '生成点位' }
     ]
   }
 ];

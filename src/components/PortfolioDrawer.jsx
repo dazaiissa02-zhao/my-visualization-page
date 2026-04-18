@@ -129,9 +129,85 @@ function MechanismPlaceholder({ label, sublabel }) {
   );
 }
 
+function AnchorMechanism({ visual }) {
+  return (
+    <div className="overflow-hidden rounded-[28px] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.03))] px-6 py-7 md:px-7 md:py-8">
+      <div className="max-w-[520px]">
+        <span
+          className="text-[11px] uppercase tracking-[0.26em] text-white/30"
+          style={{ fontFamily: page4Font }}
+        >
+          {visual.eyebrow}
+        </span>
+        <h3
+          className="mt-3 text-[24px] leading-tight text-white md:text-[28px]"
+          style={{ fontFamily: page4Font }}
+        >
+          {visual.title}
+        </h3>
+        <p
+          className="mt-3 text-sm leading-7 text-white/50 md:text-[15px]"
+          style={{ fontFamily: page4Font }}
+        >
+          {visual.summary}
+        </p>
+      </div>
+
+      <div className="relative mt-8 grid gap-4 md:grid-cols-3">
+        <div className="pointer-events-none absolute left-[16.5%] right-[16.5%] top-9 hidden h-px bg-white/10 md:block" />
+
+        {visual.steps.map((step, index) => (
+          <div
+            key={step.title}
+            className="relative rounded-[22px] border border-white/10 bg-white/[0.04] p-5"
+          >
+            <div className="mb-5 flex items-center gap-3">
+              <div className="flex h-7 w-7 items-center justify-center rounded-full border border-white/14 bg-white/[0.06] text-[12px] text-white/55">
+                0{index + 1}
+              </div>
+              <div className="h-px flex-1 bg-white/8 md:hidden" />
+            </div>
+
+            <h4
+              className="text-lg text-white/88"
+              style={{ fontFamily: page4Font }}
+            >
+              {step.title}
+            </h4>
+            <p
+              className="mt-2 text-sm text-white/58"
+              style={{ fontFamily: page4Font }}
+            >
+              {step.caption}
+            </p>
+            <p
+              className="mt-5 text-sm leading-7 text-white/42"
+              style={{ fontFamily: page4Font }}
+            >
+              {step.detail}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-7 border-t border-white/8 pt-5">
+        <p
+          className="max-w-[540px] text-sm leading-7 text-white/38"
+          style={{ fontFamily: page4Font }}
+        >
+          {visual.footer}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 // ─── 子组件：主视觉位路由──────────────────────────────
 // 根据 visual.type 决定渲染截图占位还是机制图占位
 function VisualSlot({ visual }) {
+  if (visual.type === 'mechanism') {
+    return <AnchorMechanism visual={visual} />;
+  }
   if (visual.type === 'screenshot') {
     return <ScreenshotPlaceholder hoverLink={visual.hoverLink} />;
   }
