@@ -40,7 +40,7 @@ Vibe Coding降低了非技术人员进行创作的门槛。我希望用这份可
 | 样式 | Tailwind CSS |
 | 图标 | Lucide React |
 | 部署 | GitHub + Vercel |
-| 开发工具 | Trae IDE（AI辅助编程）|
+| 开发工具 | Trae IDE（AI辅助编程）｜Claude code|
 
 ---
 
