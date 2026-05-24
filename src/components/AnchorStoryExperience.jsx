@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
 import { anchorStoryData } from '../data/anchorStoryData';
@@ -329,7 +329,7 @@ function AnchorScene({ scene }) {
   );
 }
 
-export default function AnchorStoryExperience({ work }) {
+function StoryView({ work }) {
   return (
     <article className="anchor-story">
       <div className="anchor-story__backdrop" aria-hidden="true" />
@@ -394,5 +394,74 @@ export default function AnchorStoryExperience({ work }) {
         </StoryReveal>
       </div>
     </article>
+  );
+}
+
+// ── 外层包装：「设计意图 / 在线体验」双 tab 切换 ──
+function tabBtnStyle(active) {
+  return {
+    padding: '8px 22px',
+    borderRadius: 9999,
+    border: active ? '1px solid #e0b658' : '1px solid rgba(255,255,255,0.18)',
+    background: active ? 'rgba(224,182,88,0.18)' : 'rgba(255,255,255,0.04)',
+    color: active ? '#f4e3a8' : 'rgba(255,255,255,0.65)',
+    cursor: 'pointer',
+    fontSize: 14,
+    letterSpacing: '0.04em',
+    fontFamily: 'inherit',
+    transition: 'all 0.18s ease',
+    whiteSpace: 'nowrap',
+  };
+}
+
+export default function AnchorStoryExperience({ work }) {
+  const [view, setView] = useState('story');
+
+  return (
+    <div style={{ position: 'relative' }}>
+      {/* 顶部 sticky tab 切换条 */}
+      <div
+        style={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 30,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 6,
+          padding: '12px 16px',
+          background: 'transparent',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
+          borderBottom: 'none',
+        }}
+      >
+        <button type="button" onClick={() => setView('story')} style={tabBtnStyle(view === 'story')}>
+          设计意图
+        </button>
+        <button type="button" onClick={() => setView('live')} style={tabBtnStyle(view === 'live')}>
+          在线体验
+        </button>
+      </div>
+
+      {/* 内容区：两个视图二选一 */}
+      {view === 'story' ? (
+        <StoryView work={work} />
+      ) : (
+        <iframe
+          src="/anchor-interactive.html"
+          title="Anchor · 注意力停靠 · 交互原型"
+          style={{
+            width: '100%',
+            height: 'calc(88vh - 60px)',
+            border: 0,
+            display: 'block',
+            background: '#ede2bd',
+          }}
+          sandbox="allow-scripts allow-same-origin"
+          loading="eager"
+        />
+      )}
+    </div>
   );
 }
