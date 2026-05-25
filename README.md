@@ -5,7 +5,7 @@
 
 🔗 **在线访问：
 [zhaoxiaoting.vercel.app](https://zhaoxiaoting.vercel.app/)**
-https://zhaoxiaoting.art（https://zhaoxiaoting.art）
+https://zhaoxiaoting.art
 
 ---
 
